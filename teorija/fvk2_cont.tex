@@ -1,8 +1,47 @@
 paragraph{11 Condition coverage.}
-\indent Condition coverage bele
+\indent Condition coverage beleži koliko je puta svaka permutacija članova u Bulovom izrazu izazvala da kompletan izraz ima vrednost true ili false. Razmotrimo izraz (A && B) || C || D. Ovaj izraz je true u slučaju sledeća tri uslova:
+\begin{enumerate}
+\item A &&B
+\item C
+\item D
+\end{enumerate}
+a false je u slučaju ova dva uslova:
+\begin{enumerate}
+\item !A && !C && !D
+\item !B && !C && !D
+\end{enumerate}
+\indent Stroža forma condition pokrivenosti - ekskluzivna condition pokrivenost - je ponekad na raspolaganju. Ona zahteva da svaki član bude kontrolišući član - da bude jedini razlog za to što izraz ima vrednost true ili false. Za gore navedeni primer izraz ima vrednost true za narednih pet ekskluzivnih uslova. Kontrolišući član je boldovan:
+\begin{enumerate}
+\item \textbf{A && B} && !C && !D
+\item \textbf{A} && B && \textbf{C} && !D
+\item A && \textbf{!B} && \textbf{C} && !D
+\item \textbf{!A} && B && !C && \textbf{D}
+\item A && \textbf{!B} && !C && \textbf{D}
+\end{enumerate}
 paragraph{12 FSM coverage.}
+\indent Moderni alati za code coverage identifikuju i izdvajaju mašine konačnog stanja iz RTLa. Postoji više FSM metrika od interesa za verifikacione inženjere:
+\begin{itemize}
+\item[-] Osnovna je \textbf{state coverage}: koliko puta je mašina stanja ušla u svako od stanja?
+\item[-] Druga je \textbf{arc coverage}: koliko puta je FSM prešao iz jednog stanja u njemu susedna stanja? Arc coverage bi trebao da bude reportovan (reported) za pod-izraze svake jednačine narednog stanja, kao što smo videli u condition pokrivenosti.
+\item[-] Treća FSM metrika je \textbf{sequential arc coverage}, često nazvana \textbf{transition coverage}. Sequential arc coverage identifikuje sekvence posete stanja različitih trajanja i beleži broj obilazaka svake sekvence.
+\end{itemize}
+\indent Razmotrimo primer FSMa od pet stanja i devet grana (arcs) prikazanih na slici \ref{img-state-coverage}. Pored svake grane nalazi se njoj odgovarajuća jednačina narednog stanja. Moguć izveštaj state coverage-a za ovaj FSM dat je slici pored.\\
+\indent Arc coverage za isti FSM dat je na slici \ref{img-arc-coverage}.\\
+\indent Moguć izveštaj sequential arc coverage-a za dvo-grane prelaze počevši od stanja S1, za isti FSM, dat je na slici \ref{img-sequential-arc-coverage}.
 paragraph{13 Neophodni koraci u procesu korišćenja strukturne pokrivenosti (Code Coverage). Navesti i ukratko objasniti svaki od njih.}
+\indent Code coverage izveštava o tome koliko je uspešno RTL implementacija uređaja izupotrebljavana (exercised) iz perspektive ranije navedenih metrika. Pošto je RTL podložan promenama u ranim fazama dizajna, mi smo zainteresovani za izupotrebljavanost dizajna tek u kasnijim etapama dizajn ciklusa. Koraci code coverage procesa su:
+\begin{itemize}
+\item \textbf{instrumentacija}: Prvi korak u korišćenju strukturne (code) pokrivenosti je instrumentacija RTLa. Odabiramo module koda, hijerarhije ili instance koje ćemo posmatrati. Sledeće, odabiramo metriku koju ćemo beležiti (record). Količina instrumentovanog koda i broj merenih metrika će odrediti stepen degradacije simulacije. Moramo ograničiti ova dva faktora tako da postignemo ciljeve pokrivenosti. Poslednji korak instrumentacije zavisi od konkretnog alata koji koristimo:
+\begin{itemize}
+\item[-] Za započinjanje beleženja metrika neki alati ne zahtevaju dalje radnje pre simulacije.
+\item[-] Drugi alati zahtevaju korak instrumentacije/kompilacije, gde u RTL ubacuju kod koji definiše brojače i inkrementira ih.
+\end{itemize}
+\item \textbf{beleženje metrike}: Drugi korak u primeni strukturne pokrivenosti je beleženje metrika. Ovo beleženje radi simulator tokom simulacije. Zabeleženi podaci moraju da se organizuju pre analize koja sledi. Svaka od zabeleženih metrika ima svoj prag ili hit count. Default vrednost obučno iznosi 1. U visoko rizičnim delovima RTLa, sa možda neobičnom količinom kompleksnosti, trebalo bu razmotriti povećanje praga zabeleženih metrika u ovim delovima. Ovo "over-samplovanje" će umanjiti rizik be
+\item \textbf{analiza}: Treći korak u korišćenju strukturne pokrivenosti je analiziranje merenja. Irelevantni podaci moraju da se isključe iz analiza i fokus mora da bude na značenju zabeleženih metrika. Treba zapamtiti da strukturna pokrivenost ne može da otkrije potreban RTL, koji nedostaje. Ako RTL potreban za implementaciju dela funkcionalnosti uređaja nije napisan, to ne može da identifikuje strukturna pokrivenost, već samo funkcionalna. Kako bi se smanjila preopterećenost informacijama dobijenih od alata za pokrivenost koristi se data filtering.
+\end{itemize}
+\indent *Random useful fact: Structural coverage models have no ability to predict bugs; bug coverage model they are not.
 paragraph{14 Funkcionalna pokrivenost (Functional Coverage). Osnovna ideja.}
+\indent 
 paragraph{15 Koraci prilikom formiranja modela funkcionalne pokrivenosti. Navesti i ukratko objasniti.}
 paragraph{16 Matrični model zavisnosti atributa funkcionalne pokrivenosti. Objasniti i navesti primer.}
 paragraph{17 Hijerarhijski model zavisnosti atributa funkcionalne pokrivenosti. Objasniti i navesti primer.}
