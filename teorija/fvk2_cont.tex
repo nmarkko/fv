@@ -41,10 +41,24 @@ paragraph{13 Neophodni koraci u procesu korišćenja strukturne pokrivenosti (Co
 \end{itemize}
 \indent *Random useful fact: Structural coverage models have no ability to predict bugs; bug coverage model they are not.
 paragraph{14 Funkcionalna pokrivenost (Functional Coverage). Osnovna ideja.}
-\indent 
+\indent Svrha merenja funkcionalne pokrivenosti je merenje verifikacionog napretka iz perspektive funkcionalnih zahteva uređaja. Funkcionalni zahtevi za ulaze i izlaze uređaja - i njihove međusobne veze - specifikacijama uređaja (funkcionalna specifikacija i specifikacija dizajna). Zahtevi za ulaze diktiraju opseg podataka i vremenski opseg ulaznih stimulusa. Zahtevi za izlaze specificiraju potpuni skup data i temporalnih odgovora koji se posmatraju. Ulazno/izlazni zahtevi specificiraju sve stimulus/response permutacije koje se moraju posmatrati kako bi se zadovoljili black-box device zahtevi.\\
+\indent Pošto ovi ulazni, izlazni i ulazno/izlazni zahtevi mogu u potpunosti da definišu ponašanje uređaja, prostor funkcionalne pokrivenosti koji oslikava ove zahteve se naziva model pokrivenosti (coverage model). Stepen u kom coverage model oslikava ove zahteve jeste njegova tačnost (fidelity). Fidelity modela određuje koliko blisko model definiše stvarne bihevijalne zahteve uređaja. Ovo je abstraction gap između modela pokrivenosti i uređaja.\\
+\indent Za razliku od strukturne pokrivenosti, ne postoji automatizovan način za kreiranje modela funkcionalne pokrivenosti. Funkcionalna pokrivenost targetira semantičke aspekte test generisanja ili dizajn implementacije. Neophodno je odabrati koje funkcionalne oblasti dizajna treba testirati. Uvid u dizajn semantiku navodi ove izbore, i te uvide daju dizajner ili verifikacioni inženjeri.\\
+\indent Značajna komponenta ovih uvida je znanje o kompleksnosti dizajna, za oblasti koje su sklone bugovima. Predictive bug coverage komponenta modela funkcionalne pokrivenosti potiče od iskustva inženjera. Ne postoji skup kompleksnih automatskih alata na raspolaganju za definisanje modela funkcionalne pokrivenosti. Alati većinom podržavaju implementaciju modela pokrivenosti i efikasno skupljanje podataka tokom simulacije (during runtime). Nakon što su podaci prikupljeni, alati pružaju GUI podršku za pregled rezultata.
 paragraph{15 Koraci prilikom formiranja modela funkcionalne pokrivenosti. Navesti i ukratko objasniti.}
+\indent Koraci prilikom formiranja modela funkcionalne pokrivenosti uključuju:
+\begin{itemize}
+\item opis semantike modela,
+\item identifikovanje atributa (eventova) pokrivenosti i
+\item specificiranje veze između ovih atributa koji karakterišu uređaj i vreme njihove korelacije. 
+\end{itemize}
+\indent Semantika modela je priča, opis onoga što se modeluje. Primer input coverage modela je: \textit{Dekoder instrukcija mora da dekodira svaki opkod, u svakom modu adresiranja sa svim permutacijama operand registara}. Primer output modela je: \textit{Posmatramo sekvencu paketa istog prioriteta, gde dužina sekvence varira od 1 do 255}.\\
+\indent Kada je napisan opis semantike, drugi kroak u diyajniranju modela pokrivenosti je identifikacija atributa, tj. coverage eventova. Šta podrazumevamo pod atributom? Atribut specificira događaj u modelu ili testbenchu, koji je dovoljno značajan da bi ga verifikaciono okruženje zapazilo i zabeležilo njegovu pojavu..[...].
 paragraph{16 Matrični model zavisnosti atributa funkcionalne pokrivenosti. Objasniti i navesti primer.}
+\indent Matrični model razmatra svaki atribut kao dimenziju matrice, gde je broj dimenzija definisan brojem atributa. Vrednosti duž svake ose su vrednosti odgovarajućih atributa. Slika \ref{img-matrix-coverage-model} ilustruje dvodimenzionalni matrični model. Dva atributa su obeležena kao "Atribut A" i "Atribut B". Atribut A ima dvanaest vrednosti, od A0 do A11 dok atribut B ima osam vrednosti, od B0 do B7. Par atributa (An,Bm) definiše tačku u dvodimenzionalnom prostoru pokrivenosti. Ovaj matrični model definiše 96 tačaka.
+%ubaci sliku
 paragraph{17 Hijerarhijski model zavisnosti atributa funkcionalne pokrivenosti. Objasniti i navesti primer.}
+\indent Hijerarhijski model ima strukturu invertovanog stabla sa korenom na vrhu. To je usmereni graf
 paragraph{18 Hibridni model zavisnosti atributa funkcionalne pokrivenosti. Objasniti i navesti primer.}
 paragraph{19 Navesti tri modela zavisnosti atributa funkcionalne pokrivenosti. Dobre i loše strane.}
 paragraph{20 Semplovanje ulaznih atributa u slučaju funkcionalne pokrivenosti.}
