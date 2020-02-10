@@ -51,7 +51,7 @@ Podsetimo da postoje 3 različita tipa self-checking testbenčeva:
 \end{itemize}
 \paragraph{3 Objasniti „End-of-Test Case Checking“ pristup provere ispravnosti rada DUT-a. Navesti glavne prednosti ovog pristupa.}
 \hfill \break
-\indent End-of-test Case Checking se primenjuje kada checking komponente treba da provere stanje testbencha nakon završetka simulacionog testa, i to: ili u simulaciji (end of simulation checking) ili u odvojenom poslu (post-analysis checking). Koristi se kada je ispunjen jedan od sledećih uslova: \\
+\indent End-of-test Case Checking se primenjuje kada checking komponente treba da provere stanje testbencha nakon završetka simulacionog testa, i to: ili u okviru simulacije (end of simulation checking) ili u odvojenom poslu (post-analysis checking). Koristi se kada je ispunjen jedan od sledećih uslova: \\
 - Rezultati ostaju u memoriji DUVa do kraja testa.\\
 - Pristup signalima je ograničen (npr. akceleracija ili emulacija).\\
 - Zahteva se provera krajnjeg stanja testbencha i/ili DUVa (ispražnjenost redova, poređenje sa referentnim modelom).\\
@@ -61,8 +61,8 @@ Kada se koristi ova checking paradigma, verifikaciono okruženje poziva end-of-t
 \begin{figure}[h!]
 \centering
 %\includegraphics[width=1\textwidth]{img2.png}
-\includegraphics[scale=0.45]{img2.png}
-\caption{End-of-test checking: kraj simulacije. Stimulus komponenta šalje instrukcije i podatke DUVu tokom simulacije. Monitor nadgleda DUV izlaze tokom simulacije. Kada monitor uoči transakciju na izlazima DUVa, hvata tu transakciju i čuva je u memoriju. (Pored same transakcije, monitor hvata i relevantne podatke i broj ciklusa.) Po završetku simulacije, okruženje poziva checking komponentu, koja validira transakcije uhvaćene od strane monitora tokom test slučaja.}
+\includegraphics[scale=1]{img2.png}
+\caption{End-of-test checking: end of simulation. Stimulus komponenta šalje instrukcije i podatke DUVu tokom simulacije. Monitor nadgleda DUV izlaze tokom simulacije. Kada monitor uoči transakciju na izlazima DUVa, hvata tu transakciju i čuva je u memoriju. (Pored same transakcije, monitor hvata i relevantne podatke i broj ciklusa.) Po završetku simulacije, okruženje poziva checking komponentu, koja validira transakcije uhvaćene od strane monitora tokom test slučaja.}
 \label{img2}
 \end{figure} 
 \\\indent Drugačiji metod za end-of-test case checking je da se provere (checks) vrše izvan simulacionog motora (slika \ref{img3}). Slično je slučaju kada se checking vrši unutar simulacionog engine-a, samo što se ovde simulacioni engine i programi verifikacionog okruženja završe pre nego što odvojeni program započne checking. Monitor sakuplja transakcije na izlazu DUVa, ali umesto u memoriji, upisuje ih u fajl. Kada se simulacija završi, simulacioni program se terminira (na slici se checking ne vrši u simulation wave prozoru). Sada post-processing rutina, nezavisna od simulacionog okruženja, poziva checking koristeći kao ulaze fajlove očekivanih i stvarnih rezultata. Ovaj program proverava ispravnost rezultata.
@@ -88,7 +88,7 @@ Kada se koristi ova checking paradigma, verifikaciono okruženje poziva end-of-t
 \indent Idući u krajnost, svaki čvor u kolu bi mogao da ima check. Međutim, ovo stvara više poteškoća:
 \begin{itemize}
 \item Prvo, ako verifikacioni tim ugrađuje interne checkove u dizajn, tada se više verifikuje implementacija dizajna (design's implementation) nego namera (design's intent).
-\item Drugo, održavanje ekstenzivnih checkera postaje teško, pošto verifikacioni tim mora da updateuje interne checker sa svakom promenom u dizajnu.
+\item Drugo, održavanje ekstenzivnih checkera postaje teško, pošto verifikacioni tim mora da updateuje interne checkere sa svakom promenom u dizajnu.
 \end{itemize}
 \indent Druga krajnost je black box, gde nema tačaka observacije u dizajnu. Ovaj pristup proverava samo izlaze. Međutim, osim ako dizajn nije mali, veoma je verovatno da će tačka neuspeha biti logički udaljena od tačke observacije. Zato se mora balansirati između broja checkera i efikasnosti debuga. "Tačka susreta" ova dva pristupa je gray box paradigma.
 \paragraph{5 Tačke observacije (Observation points). Čemu služe i osnovne smernice kojih se treba pridržavati prilikom njihovog postavljanja.}
@@ -96,7 +96,7 @@ Kada se koristi ova checking paradigma, verifikaciono okruženje poziva end-of-t
 \indent Smernice za postavljanje tačaka observacije su:
 \begin{itemize}
 \item Ciljati na mehanizme definisane u arhitekturi dizajna. Tačke observacije na ovim strukturama su stabilne i zahtevaju manje održavanja.
-\item Ravnomerno postaviti tačke observacije kroz dizajn.
+\item Ravnomerno rasporediti tačke observacije kroz dizajn.
 \item Koristiti tačke observacije za uvećanje navoda dizajn tima (design team's assertions). Ne kreirati suvišne tačke observacije za logiku koja već sadrži assertions-e.
 \end{itemize}
 \paragraph{6 Izveštavanje o detektovanim greškama. Dobar i loš pristup. Ukratko objasniti.}
@@ -108,8 +108,7 @@ Kada se koristi ova checking paradigma, verifikaciono okruženje poziva end-of-t
 100 transactions received\\
 1 error\\}
 \indent Ovaj izveštaj ne pomaže verifikacionom inženjeru u debagovanju, jer ne saopštava kako i kada je checker uočio neuspeh (encountered a failure). Ove poruke nam čak ne govore ni tačku observacije. Ovde bismo neuspeh debugovali pregledanjem trace file-a, ne znajući ni šta je greška bila, ni kada se dogodila.\\
-\indent Umesto toga, checker bi trebao da loguje kompletne podatke o neuspehu. To uključuje trenutni ciklus, verifikacioni model, poruku neuspeha, dizajn hijerarhiju u kojoj je checker uočio neuspeh, net-ove uključene u check, stvarne DUV vrednosti i očekivanje vrednosti.\\
-\indent Na primer:\\
+\indent Umesto toga, checker bi trebao da loguje kompletne podatke o neuspehu. To uključuje trenutni ciklus, verifikacioni model, poruku neuspeha, dizajn hijerarhiju u kojoj je checker uočio neuspeh, net-ove uključene u check, stvarne DUV vrednosti i očekivanje vrednosti. Na primer:\\
 \texttt{ERROR (Time 50): Checker: Port 1 — Wrong response\\
 ERROR (Time 50): Checker: Port 1 — Expected Response: Good\\
 ERROR (Time 50): Checker: Port 1 — Actual Response: Overflow\\
@@ -121,12 +120,12 @@ ERROR (Time 50): Checker: Port 1 — Actual Result: “0F12023E’’X\\}
 \indent Razni alati nam pomažu u otkrivanju toga "kako i kada" se dogodio miscompare. Ovi alati postoje kao mehanizmi za smanjenje vremena debagovanja. Kreću se od osnovnih poruka do naprednijih alata koji dozvoljavaju grafički debug test bencha. To su:
 \begin{itemize}
 \item[-] Print: 
-Osnovni mehanizam reportovanja je\textbf{print}. Implementira se dodavanjem print naredbi u komponente okruženja za logovanje test bench aktivnosti. Inženjeri koriste zasebne log fajlove za individualne verifikacione komponente (umesto globalnog log fajla koji bi hvata poruke svih komponenti), kako bi mogli brže da prođu kroz dosta poruka.\\
-Mana je što komponente mogu da generišu hiljade linija poruka u log fajlu. Rešenje je da se u kod okruženja uključe programirani debug nivoi (\textbf{programmed debug levels}). Kada se test case pokreće u default modu, komponente koriste najniži nivo poruke gde checkeri prijavljuju samo greške - ne i dodatne informacije. Ali, kada se dogodi greška, verifiakcioni inženjer ponovo pokreće simulaciju, sa višim nivoom debug poruka.
+Osnovni mehanizam reportovanja je \textbf{print}. Implementira se dodavanjem print naredbi u komponente okruženja za logovanje test bench aktivnosti. Inženjeri koriste zasebne log fajlove za individualne verifikacione komponente (umesto globalnog log fajla koji bi hvatao poruke svih komponenti), kako bi mogli brže da prođu kroz dosta poruka.\\
+Mana je što komponente mogu da generišu hiljade linija poruka u log fajlu. Rešenje je da se u kod okruženja uključe programirani debug nivoi (\textbf{programmed debug levels}). Kada se test case pokreće u default modu, komponente koriste najniži nivo poruka gde checkeri prijavljuju samo greške - ne i dodatne informacije. Ali, kada se dogodi greška, verifikacioni inženjer ponovo pokreće simulaciju, sa višim nivoom debug poruka.
 \item[-] Assertions (ne obrađujemo ih)
 \item[-] Waveform viewers: 
 Kada test case pođe po zlu, često su potrebni dodatni detalji. Verifikacionom inženjeru je potrebno da vidi signale unutar dizajna i njihove vrednosti u različitim trenucima tokom simulacije. Da bi ovo postigao, inženjer koristi waveform viewer. EDA (Electronic design automation) kompanije pružaju ove alate jer je to najčešći tip debugger-a.\\
-Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i, kada se isprate nazad kroz logiku, pomažu da se odredi ispravnost  izlaza. Druga upotreba je da se vidi unutrašnjost debug komponenti. Stimulus, monitor i checking komponente mogu imati interne mašine stanja kao i sam dizajn. 
+Waveform vieweri prikazuju signale i lečeve koji su od interesa nakon neuspeha testa i koji, kada se isprate nazad kroz logiku, pomažu da se odredi ispravnost  izlaza. Druga upotreba je da se vidi unutrašnjost debug komponenti. Stimulus, monitor i checking komponente mogu imati interne mašine stanja kao i sam dizajn. 
 \item[-] Memory viewers (ne obrađujemo ih)
 \end{itemize}
 \paragraph{8 Uticaj vrste test bencha na mogućnost efikasnog debug-a.}
@@ -144,7 +143,7 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \indent Debagovanje end-of-test case i on-the-fly checkinga zahteva slične metode - oba zahtevaju praćenje porekla neuspeha (origin of failure). Stoga je preporučljivo korišćenje debug alata, kao što su print naredbe, u verifikacionom okruženju. Ovi alati dozvoljavaju verifikacionom timu da isprati transakciju od nastanka (generisanja) kroz okruženje do checkera. Često verifikacioni tim dodaje posebna polja strukturama podataka koje se koriste u verifikacionom okruženju. Jedina svrha ovih posebnih polja je da pomognu u praćenju porekla neuspeha.
 \paragraph{12 Ponovno korišćenje verifikacionih komponenti (Verification Re-Use). Navesti i ukratko objasniti koje vrste postoje.}
 \hfill \break
-\indent Re-use omogućava verifikacionom timu da leverage-uje verifikacione komponente i dizajn blokove na čipu ili na više čipova u sistemu. Kao i za dizajn, i za verifikacione komponente važi koncept "jednom napravi, koristi na više mesta". Rezultat je poboljšano vreme do izbacivanja na tržište (time to market) i smanjene zahtevi za resursima. Na slici \ref{img6} je primer ponovnog korišćenja dizajna.
+\indent Re-use omogućava verifikacionom timu da maksimalno iskoristi (to leverage) verifikacione komponente i dizajn blokove na čipu ili na više čipova u sistemu. Kao i za dizajn, i za verifikacione komponente važi koncept "jednom napravi, koristi na više mesta". Rezultat je poboljšano vreme do izbacivanja na tržište (time to market) i smanjeni zahtevi za resursima. Na slici \ref{img6} je primer ponovnog korišćenja dizajna.\\
 \begin{figure}[h!]
 \centering
 %\includegraphics[width=1\textwidth]{img6.png}
@@ -152,20 +151,20 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \caption{Design re-use. Višestruka upotreba jednog unit-a (više instanci) na čipu ili na više čipova.}
 \label{img6}
 \end{figure}
- \indent Pošto verifikacija čini veliki deo dizajn napora, ima smisla primeniti na nju koncepte ponovnog korišćenja dizajna. To smanjuje trajanje projekta. Generalno, horizontalni re-use se dešava kada tim koristi dizajn unit ili verifikacionu komponentu na istom nivou hijerarhije. Primer horizontalnog re-usea u verifikaciji dat je na slici \ref{img7}.
+\indent Pošto verifikacija čini veliki deo dizajn napora, ima smisla primeniti na nju koncepte ponovnog korišćenja dizajna. To smanjuje trajanje projekta. Generalno, horizontalni re-use se dešava kada tim koristi dizajn unit ili verifikacionu komponentu na istom nivou hijerarhije. Primer horizontalnog re-usea u verifikaciji dat je na slici \ref{img7}.\\
 \begin{figure}[h!]
 \centering
 %\includegraphics[width=1\textwidth]{img7.png}
 \includegraphics[scale=0.5]{img7.png}
-\caption{Horizontal verification re-use: korišćenje verifikacionih komponenti kroz jedan nivo verifikacije. (a) Čip u kom su tri unit-a, A, B, i C, povezani na zajedničku magistralu. (b) Interfejs ka ovoj zajedničkoj magistrali je identičan, tako da verifikacioni tim kreira stimulus komponentu koja se može više puta koristiti za verifikaciona okruženja tri unit-a.}
+\caption{Horizontal verification re-use: korišćenje verifikacionih komponenti kroz jedan nivo verifikacije. (a) Čip u kom su tri unit-a, A, B, i C, povezani na zajedničku magistralu. (b) Interfejs ka ovoj zajedničkoj magistrali je identičan, tako da verifikacioni tim kreira stimulus komponentu koja se može više puta koristiti za verifikaciona okruženja sva tri unit-a.}
 \label{img7}
 \end{figure}
-\indent Druga forma re-usea, vertikalni re-use, je svojstvena verifikaciji. To je upotreba verifikacionih komponenti kroz više nivoa hijerarhije. Vertikalni re-use je značajan za system simulaciju jer dozvoljava verifikacionom timu da leverage-uje ono što je već implementirano. Ovo, kao i u horizontal re-use slučaju, dozvoljava optimizaciju resura. Na slici \ref{img8} dat je jednostavan primer vertical verification re-usea.
+\indent Druga forma re-usea, vertikalni re-use, je svojstvena verifikaciji. To je upotreba verifikacionih komponenti kroz više nivoa hijerarhije. Vertikalni re-use je značajan za system simulaciju jer dozvoljava verifikacionom timu da leverage-uje ono što je već implementirano. Ovo, kao i u horizontal re-use slučaju, omogućava optimizaciju resura. Na slici \ref{img8} dat je jednostavan primer vertical verification re-usea.\\
 \begin{figure}[h!]
 \centering
 %\includegraphics[width=1\textwidth]{img8.png}
 \includegraphics[scale=0.5]{img8.png}
-\caption{Vertical verification re-use: korišćenje verifikacionih komponenti kroz razne hijerarhijske nivoe (od unit-a do sistema).}
+\caption{Vertical verification re-use: korišćenje verifikacionih komponenti kroz razne nivoe hijerarhije (od unit-a do sistema).}
 \label{img8}
 \end{figure}
 \indent Verifikacione komponente koje mogu biti ponovo korišćenje i horizontalno i vertikalno nazivaju se \textbf{re-usable verification IP}. Re-usable verification IP dozvoljava kompanijama da maksimizuju verifikacioni posao. Ovo se dešava ako kompanija razvija više čipova koji koriste interfejs koji je industrijski standard (np. peripheral component interconnect, PCI) i dele stimulus i checking komponente između više projekata.  Kompanije čak mogu i da kupe re-usable verification IP, što im naposletku predstavlja uštedu. 
@@ -191,7 +190,7 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \paragraph{15 Ponovno korišćenje verifikacionih komponenti (Verification Re-Use) - dinamičko mapiranje signala. Objasniti osnovnu ideju.}
 \hfill \break
 \indent Imena interfejs signala kojima monitori, checkeri i stimulus komponente interaguju moraju biti konfigurabilna kako bi se dozvolio horizontalni ili verikalni re-use.\\
-\indent U horizontalnom slučaju, jedna verifikaciona komponenta može biti instancionirana više puta u okruženju, ili može biti povezana sa različitim unitima gde svaki unit uma različita imena signala. Calc2 dizajn je dobar primer ovog, prikazano na slici \ref{img10}.
+\indent U horizontalnom slučaju, jedna verifikaciona komponenta može biti instancionirana više puta u okruženju, ili može biti povezana sa različitim unitima gde svaki unit ima različita imena signala. Calc2 dizajn je dobar primer ovog, prikazano na slici \ref{img10}.\\
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.5]{img10.png}
@@ -211,22 +210,22 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \paragraph{Predavanje 10-11 - Monitoring the Verification Flow}
 \paragraph{1 Verifikaciona pokrivenost (Verification Coverage). Ukratko objasniti zašto je važna i šta predstavlja.}
 \hfill \break
-\indent Verifikacionom timu je potrebna metrika kvaliteta i potpunosti njihovog rada kako projekat napreduje tokom vremena. Postoje očigledni kriterijumi potpunosti koje verifikacioni tim može da izvuče iz diskusije verifikacionog plana. Praćenje statusa različitih verifikacionih zadataka je fundamentalna informacija o napredovanju projekta. Znanje o tome koje su testove iz test plana verifikacioni inženjeri zaista izveli nam pruža neophodnu metriku. Praćenje bug rate-a je ključni deo scorekeeping-a koji vodi projekat. I dalje, centralno pitanje je "Kada je verifikacija gotova?". Jednom kada tim završi sve planirane verifikacione zadatke, pokrene sve testove, i bug rate padne na nulu, da li tada verifikaciju možemo proglasiti uspehom?\\
+\indent Verifikacionom timu je potrebna metrika kvaliteta i potpunosti njihovog rada kako projekat napreduje tokom vremena. Postoje očigledni kriterijumi potpunosti koje verifikacioni tim može da izvuče iz diskusije verifikacionog plana. Praćenje statusa različitih verifikacionih zadataka je fundamentalna informacija o napredovanju projekta. Znanje o tome koje su testove iz test plana verifikacioni inženjeri zaista izveli nam pruža neophodnu metriku. Praćenje bug rate-a je ključni deo scorekeeping-a koji vodi projekat. I dalje, centralno pitanje je "Kada je verifikacija gotova?". Jednom kada tim završi sve planirane verifikacione zadatke, pokrene sve testove, i bug rate padne na nulu, da li tada verifikaciju možemo proglasiti uspešnom?\\
 \indent Iscrpna simulacija čak i malih dizajnova nije moguća. Sledeći primer ukazuje na kombinatornu eksploziju koja čini verifikaciju nezgodnim zadatkom. Neka je DUV 16-bitni sabirač. Simuliranje svih kombinatornih mogućnosti ovog sabirača traje 4 milijarde simulacionih ciklusa, pretpostavljajući da kolo nema elemente za čuvanje stanja. Ako projekat koristi simulacioni engine koji može da pokrene 1000 ciklusa u sekundi, timu će i dalje biti potrebno oko 50 dana da iscrpno simulira ovaj trivijalni DUV. \\
 \indent Kada verifikacioni tim zaustavlja simulaciju? Da li je dovoljno nastaviti dok simulacija nije imala bagova 3 dana? Kako da znamo da još jedan dan simulacije ne bi doneo novi bug? Da li je zaista neophodno iscrpno simulirati sabirač kako bi se uverljivo pokazala potpunost verifikacije?\\
-\indent Upravo \textbf{analiza verifikacione pokrivenosti} (verification coverage analysis) ima za zadatak da uveri verifikacioni tim da su \textbf{dovoljno}, ne iscrpno, verifikovali, i da su zadovoljili definisane kriterijume kvaliteta. Verifikaciona pokrivenost je mera prostora stanja koju je verifikacija bazirana na simulaciji dotakla u čitavom okruženju. Pokrivenost može da meri interna stanja DUVa, redove, i aktivnosti, kao i DUV ulazwei čak stanja komponenti verifikacionog okruženja. U osnovi, pokrivenost je mera toga koliko su \textbf{dobro} stimulus komponente izupotrebljavale DUV. Pokrivenost ne može da oceni kvalitet ili robusnost checking komponenti.
+\indent Upravo \textbf{analiza verifikacione pokrivenosti} (verification coverage analysis) ima za zadatak da uveri verifikacioni tim da su \textbf{dovoljno}, ne iscrpno, verifikovali, i da su zadovoljili definisane kriterijume kvaliteta. Verifikaciona pokrivenost je mera prostora stanja koju je verifikacija bazirana na simulaciji dotakla u čitavom okruženju. Pokrivenost može da meri interna stanja DUVa, redove, i aktivnosti, kao i DUV ulaze, čak i stanja komponenti verifikacionog okruženja. U osnovi, pokrivenost je mera toga koliko su \textbf{dobro} stimulus komponente izupotrebljavale DUV. Pokrivenost ne može da oceni kvalitet ili robusnost checking komponenti.
 \paragraph{2 Oblasti unutar verifikacionog okruženja gde se može meriti verifikaciona pokrivenost (Verification Coverage Target Areas).}
 \hfill \break
 \indent Postoje dve potpuno komplementarne strane verifikacione pokrivenosti.\\
-\indent Prvo, tu je pokrivenost verifikacionog okruženje. Ovde je cilj izmeriti koliko dobro verifikaciono stimulus okruženje pokriva specifikaciju dizajna. Ovaj aspekt pokrivenost naziva se pokrivenost verifikacionog testa (\textbf{verification test coverage}).\\
-\indent Drugo, postoji pokrivenost funkcije implementirane DUVom. Ova metrika meri koliko dobro verifikacioni stimulus aktivira ili upotrebljava (exercise) implementaciju specifikacije u konkretnom dizajnu. Ovaj zadatak pokrivenosti se naziva pokrivnost implementacije (\textbf{coverage implementation}). Slika \ref{img-p10-1} pokazuje dve oblasti analize pokrivenosti, jednu pored druge.
+\indent Prvo, tu je pokrivenost verifikacionog okruženja. Ovde je cilj izmeriti koliko dobro verifikaciono stimulus okruženje pokriva specifikaciju dizajna. Ovaj aspekt pokrivenost naziva se pokrivenost verifikacionog testa (\textbf{verification test coverage}).\\
+\indent Drugo, postoji pokrivenost funkcije implementirane DUVom. Ova metrika meri koliko dobro verifikacioni stimulus aktivira ili upotrebljava (exercise) implementaciju specifikacije u konkretnom dizajnu. Ovaj zadatak pokrivenosti se naziva pokrivenost implementacije (\textbf{coverage implementation}). Slika \ref{img-p10-1} pokazuje dve oblasti analize pokrivenosti, jednu pored druge.
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.6]{img-p10-1.png}
 \caption{Verification Coverage Target Areas.}
 \label{img-p10-1}
 \end{figure}
-\\ \indent Osnovna aktivnost koja prethodi bilo kakvoj analizi pokrivenosti je sakupljanje merenja pokrivenosti (coverage measurements). Verifikacioni tim sakuplja merenja za \textbf{test coverage} od stimulus-inciijatorske komponente, test slučaja, ili interfejsa u DUV. \textbf{Implementation coverage} analiza se oslanja na merenja aktivnosti unutar DUVa, koja se dobijaju pregledom HDL modela tokom simulacije.\\
+\\ \indent Osnovna aktivnost koja prethodi bilo kakvoj analizi pokrivenosti je sakupljanje merenja pokrivenosti (coverage measurements). Verifikacioni tim sakuplja merenja za \textbf{test coverage} od komponente koja inicira stimuluse, test slučaja, ili interfejsa u DUV. \textbf{Implementation coverage} analiza se oslanja na merenja aktivnosti unutar DUVa, koja se dobijaju pregledom HDL modela tokom simulacije.\\
 \indent Kroz aktivnosti merenja i analize, verifikacioni tim ne sme da zaboravi da je krajnji cilj analize pokrivenosti da usmerava verifikacioni proces, a ne da dokazuje njegovu potpunost. Potpunost je nedostižan cilj.
 \paragraph{3 Ciljevi merenja verifikacione pokrivenosti (Verification Coverage Goals).}
 \hfill \break
@@ -258,7 +257,7 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \end{figure}
 \paragraph{7 Line coverage.}
 \hfill \break
-\indent Line coverage uzima sintaksnu strukturu HDL specifikacije i meri koje HDL linije su izvršene u simulaciji. Slično toggle pokrivenosti, ovaj model pokrivenosti je lak za razumeti, i odsustvo aktivnosti u delovima HDL modela ukazuje na propuste u testovima. Ograničenje line pokrivenosti je to što nam nedostaje semantički uvod. Činjenica da se HDL naredba (statement) izvršila nam ne govori ništa o ispravnosti sadržaja naredbe. Primer je dat na slici \ref{img-p10-4}.
+\indent Line coverage uzima sintaksnu strukturu HDL specifikacije i meri koje HDL linije su izvršene u simulaciji. Slično toggle pokrivenosti, ovaj model pokrivenosti je lak za razumeti, i odsustvo aktivnosti u delovima HDL modela ukazuje na propuste u testovima. Ograničenje line pokrivenosti je to što nam nedostaje semantički uvid. Činjenica da se HDL naredba (statement) izvršila nam ne govori ništa o ispravnosti sadržaja naredbe. Primer je dat na slici \ref{img-p10-4}.
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.5]{img-p10-4.png}
@@ -267,7 +266,7 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \end{figure}
 \paragraph{8 Statement coverage.}
 \hfill \break
-\indent Statement coverage izveštava o tome koje RTL naredbe su se izvršile, a koje nisu. Ova metrika je preciznija od line pokrivenosti jer naredbe mogu da obuhvataju više linija i više od jedne naredbe može da se nalazi u jednom redu. Primer na slici \ref{img-p10-5}.
+\indent Statement coverage izveštava o tome koje RTL naredbe su se izvršile, a koje nisu. Ova metrika je preciznija od line pokrivenosti jer naredbe mogu da obuhvataju više linija i više od jedne naredbe može da se nalazi u jednoj liniji. Primer na slici \ref{img-p10-5}.
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.5]{img-p10-5.png}
@@ -276,7 +275,7 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \end{figure}
 \paragraph{9 Branch coverage.}
 \hfill \break
-\indent Branch coverage ili uslovni coverage pregleda uslovne naredbe (if, case, while, repeat, forever, for and loop) u HDLu i prati koje od ovih uslova simulacija susretne, a koje ne. Ovaj model pretpostavlja da postoji semantičko značenje u uslovima koje je dizajner izrazio u HDLu. Tačke odluke u HDL specifikaciji obično predstavljaju različite uslove na koje dizajn treba da odreaguje. Zato, odsustvo donošenja odluka u svim mogućim, predviđenim uslovima ukazuje na nedostatak testinga. Primer na slici \ref{img-p10-6}.
+\indent Branch coverage ili uslovni coverage pregleda uslovne naredbe (if, case, while, repeat, forever, for i loop) u HDLu i prati koje od ovih uslova simulacija susretne, a koje ne. Ovaj model pretpostavlja da postoji semantičko značenje u uslovima koje je dizajner izrazio u HDLu. Tačke odluke u HDL specifikaciji obično predstavljaju različite uslove na koje dizajn treba da odreaguje. Zato, odsustvo donošenja odluka na sve moguće, predviđene načine ukazuje na nedostatak testinga. Primer na slici \ref{img-p10-6}.
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.6]{img-p10-6.png}
@@ -285,7 +284,7 @@ Waveform vieweri prikazuju signale i lečeve od interesa nakon neuspeha testa i,
 \end{figure}
 \paragraph{10 Path coverage.}
 \hfill \break
-\indent Path coverage je profinjenje branch coverage-a. Path pokrivenost izveštava o tome koliko je puta svaka moguća putanja u kodu izvršena. Umesto posmatranja jedne uslovne odluke zasebno, path pokrivenost analizira tok izvršavanja HDLa i identifikuje kombinacije odluka u putanje izvršavanja. Slika \ref{img-p10-7} pokazuje automatsko generisanje četiri moguće putanje izvršavanja na datom HDLu sa if/then/else strukturom. Da je branch pokrivenost korišćena, ukazala bi da je prođeno svim granama. Ali samo path pokrivenost može otkriti da jednom od mogućih putanja kroz strukturu nije prođeno, što je značajna indikacija za verifikacioni tim.
+\indent Path coverage je profinjenje branch coverage-a. Path pokrivenost izveštava o tome koliko je puta svaka moguća putanja u kodu izvršena. Umesto posmatranja jedne uslovne odluke zasebno, path pokrivenost analizira tok izvršavanja HDLa i grupiše kombinacije odluka u putanje izvršavanja. Slika \ref{img-p10-7} pokazuje automatsko generisanje četiri moguće putanje izvršavanja na datom HDLu sa if/then/else strukturom. Da je branch pokrivenost korišćena, ukazala bi da je prođeno svim granama. Ali samo path pokrivenost može otkriti da jednom od mogućih putanja kroz strukturu nije prođeno, što je značajna indikacija za verifikacioni tim.
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.5]{img-p10-7.png}
@@ -313,7 +312,7 @@ a false je u slučaju ova dva uslova:
 \item \textbf{!A} \&\& B \&\& !C \&\& \textbf{D}
 \item A \&\& \textbf{!B} \&\& !C \&\& \textbf{D}
 \end{enumerate}
-paragraph{12 FSM coverage.}
+\paragraph{12 FSM coverage.}
 \hfill \break
 \indent Moderni alati za code coverage identifikuju i izdvajaju mašine konačnog stanja iz RTLa. Postoji više FSM metrika od interesa za verifikacione inženjere:
 \begin{itemize}
